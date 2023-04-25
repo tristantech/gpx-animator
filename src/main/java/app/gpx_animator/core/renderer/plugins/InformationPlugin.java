@@ -16,6 +16,7 @@
 package app.gpx_animator.core.renderer.plugins;
 
 import app.gpx_animator.core.configuration.Configuration;
+import app.gpx_animator.core.data.DistanceUnit;
 import app.gpx_animator.core.data.Position;
 import app.gpx_animator.core.data.SpeedUnit;
 import app.gpx_animator.core.data.gpx.GpxPoint;
@@ -42,6 +43,7 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
     private final int margin;
     private final double fps;
     private final SpeedUnit speedUnit;
+    private final DistanceUnit elevationUnit;
     private final boolean showDateTime;
 
     private long minTime;
@@ -59,6 +61,7 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
         this.margin = configuration.getInformationMargin();
         this.fps = configuration.getFps();
         this.speedUnit = configuration.getSpeedUnit();
+        this.elevationUnit = configuration.getElevationUnit();
         this.gpsTimeout = configuration.getGpsTimeout();
         this.showDateTime = configuration.getTrackConfigurationList().stream()
                 .noneMatch(tc -> tc.getForcedPointInterval() != null);
@@ -87,6 +90,7 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
         final var dateTimeString = showDateTime ? dateFormat.format(time) : "";
         final var latLongString = getLatLonString(marker);
         final var speedString = getSpeedString(marker, time, frame);
+        final var elevationString = getElevationString(marker);
 
         final var gpsTime = getTime(marker);    //TODO --Get strings from resource
         var gpsDateTimeString = "Unknown";
@@ -111,7 +115,8 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
                 .replace("%GPSDATETIME%", gpsDateTimeString)        // (last) GPS position time
                 .replace("%GPSDIFFTIME%", gpsDiffTimeString)        // Difference between frame time and last GPS time
                 .replace("%GPSLOSTTIME%", gpsLostTimeString)        // Difference between frame time and last GPS time if GSP LOST
-                .replace("%GPSSTATUS%", gpsStatusString);           // GPS status only [OK/LOST]
+                .replace("%GPSSTATUS%", gpsStatusString)            // GPS status only [OK/LOST]
+                .replace("%ELEV%", elevationString);                // Elevation
         renderText(text, position, margin, image);
     }
 
@@ -134,6 +139,18 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
                 final var format = speed > 10 ? "%.0f %s" : "%.1f %s"; // with 1 decimal below 10, no decimals 10 and above
                 return format.formatted(speed, speedUnit.getAbbreviation());
             }
+        } else {
+            return "";
+        }
+    }
+
+    private String getElevationString(final Point2D point) {
+        if (point instanceof GpxPoint gpxPoint) {
+            final var elevation = gpxPoint.getElevation(); // GPX files are in meters
+            return "%s %s".formatted(
+                elevationUnit.getFormatted(elevation),
+                elevationUnit.getAbbreviation()
+            );
         } else {
             return "";
         }

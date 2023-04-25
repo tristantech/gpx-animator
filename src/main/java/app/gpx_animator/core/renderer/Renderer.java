@@ -680,7 +680,7 @@ public final class Renderer {
                 namedPoint.setName(wayPoint.getName());
                 point = namedPoint;
             } else if (gpxPoint instanceof TrackPoint trackPoint) {
-                point = new GpxPoint(x, y, trackPoint, time, trackPoint.getSpeed());
+                point = new GpxPoint(x, y, trackPoint, time, trackPoint.getSpeed(), trackPoint.getElevation());
             } else {
                 point = null;
             }

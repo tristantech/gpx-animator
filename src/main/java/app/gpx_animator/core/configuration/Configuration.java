@@ -20,6 +20,7 @@ import app.gpx_animator.core.UserException;
 import app.gpx_animator.core.configuration.adapter.ColorXmlAdapter;
 import app.gpx_animator.core.configuration.adapter.FileXmlAdapter;
 import app.gpx_animator.core.configuration.adapter.FontXmlAdapter;
+import app.gpx_animator.core.data.DistanceUnit;
 import app.gpx_animator.core.data.Position;
 import app.gpx_animator.core.data.SpeedUnit;
 import app.gpx_animator.core.data.VideoCodec;
@@ -52,6 +53,7 @@ public final class Configuration {
     private static final int DEFAULT_VIEWPORT_INERTIA = 50;
     private static final String DEFAULT_INFORMATION = "%SPEED%\n%LATLON%\n%DATETIME%";
     private static final SpeedUnit DEFAULT_SPEED_UNIT = SpeedUnit.KMH;
+    private static final DistanceUnit DEFAULT_ELEVATION_UNIT = DistanceUnit.METERS;
     public static final long DEFAULT_PHOTO_ANIMATION_DURATION = 700L;
     public static final Position DEFAULT_ATTRIBUTION_POSITION = Position.BOTTOM_LEFT;
     public static final long DEFAULT_GPS_TIMEOUT = 60000L;
@@ -132,6 +134,7 @@ public final class Configuration {
     private Long photoAnimationDuration = DEFAULT_PHOTO_ANIMATION_DURATION;
 
     private SpeedUnit speedUnit;
+    private DistanceUnit elevationUnit;
 
     @XmlTransient
     private boolean preview = false;
@@ -153,13 +156,19 @@ public final class Configuration {
     private Configuration(
             final int margin, final Integer width, final Integer height, final Integer zoom,
             final Integer viewportWidth, final Integer viewportHeight, final Integer viewportInertia,
-            final Double speedup, final long tailDuration, final Color tailColor, final boolean tailColorFadeout, final double fps,
-            final Long totalTime, final float backgroundMapVisibility, final String tmsUrlTemplate, final String tmsApiKey, final String tmsUserAgent,
+            final Double speedup, final long tailDuration, final Color tailColor, final boolean tailColorFadeout,
+            final double fps,
+            final Long totalTime, final float backgroundMapVisibility, final String tmsUrlTemplate,
+            final String tmsApiKey, final String tmsUserAgent,
             final boolean skipIdle, final Color backgroundColor, final File backgroundImage, final Color flashbackColor,
-            final Long flashbackDuration, final boolean preDrawTrack, final Long keepFirstFrame, final Long keepLastFrame, final File output,
-            final VideoCodec videoCodec, final String attribution, final String information, final SpeedUnit speedUnit, final Font font,
-            final Double markerSize, final Font waypointFont, final Double waypointSize, final Double minLon, final Double maxLon,
-            final Double minLat, final Double maxLat, final File logo, final Position logoPosition, final int logoMargin,
+            final Long flashbackDuration, final boolean preDrawTrack, final Long keepFirstFrame,
+            final Long keepLastFrame, final File output,
+            final VideoCodec videoCodec, final String attribution, final String information, final SpeedUnit speedUnit,
+            final DistanceUnit elevationUnit, final Font font,
+            final Double markerSize, final Font waypointFont, final Double waypointSize, final Double minLon,
+            final Double maxLon,
+            final Double minLat, final Double maxLat, final File logo, final Position logoPosition,
+            final int logoMargin,
             final Position attributionPosition, final int attributionMargin,
             final Position informationPosition, final int informationMargin,
             final Position commentPosition, final int commentMargin,
@@ -219,6 +228,7 @@ public final class Configuration {
         this.photoTime = photoTime;
         this.photoAnimationDuration = photoAnimationDuration;
         this.speedUnit = speedUnit;
+        this.elevationUnit = elevationUnit;
         this.preview = preview;
         this.previewLength = previewLength;
         this.gpsTimeout = gpsTimeout;
@@ -262,6 +272,10 @@ public final class Configuration {
 
     public SpeedUnit getSpeedUnit() {
         return speedUnit;
+    }
+
+    public DistanceUnit getElevationUnit() {
+        return elevationUnit;
     }
 
     public long getTailDuration() {
@@ -523,6 +537,7 @@ public final class Configuration {
         private Long photoTime = 3_000L;
         private Long photoAnimationDuration = DEFAULT_PHOTO_ANIMATION_DURATION;
         private SpeedUnit speedUnit = DEFAULT_SPEED_UNIT;
+        private DistanceUnit elevationUnit = DEFAULT_ELEVATION_UNIT;
         private boolean preview = false;
         private Long previewLength;
         private long gpsTimeout = DEFAULT_GPS_TIMEOUT;
@@ -536,7 +551,7 @@ public final class Configuration {
                     backgroundMapVisibility, tmsUrlTemplate, tmsApiKey, tmsUserAgent,
                     skipIdle, backgroundColor, backgroundImage, flashbackColor, flashbackDuration,
                     preDrawTrack, keepFirstFrame, keepLastFrame, output, videoCodec, attribution, information,
-                    speedUnit, font, markerSize, waypointFont, waypointSize,
+                    speedUnit, elevationUnit, font, markerSize, waypointFont, waypointSize,
                     minLon, maxLon, minLat, maxLat,
                     logo, logoPosition, logoMargin,
                     attributionPosition, attributionMargin,
@@ -802,6 +817,11 @@ public final class Configuration {
 
         public Builder speedUnit(final SpeedUnit speedUnit) {
             this.speedUnit = speedUnit;
+            return this;
+        }
+
+        public Builder elevationUnit(final DistanceUnit elevationUnit) {
+            this.elevationUnit = elevationUnit;
             return this;
         }
 

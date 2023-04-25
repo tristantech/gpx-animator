@@ -36,5 +36,6 @@ public final class TrackPoint implements MyPoint {
     @NonNull Double longitude;
     @With Long time;
     @With Double speed;
+    @With Double elevation;
     @With String comment;
 }

@@ -15,6 +15,7 @@ public enum GPX {
     LATITUDE("lat"),
     TIME("time"),
     SPEED("speed"),
+    ELE("ele"),
     NAME("name"),
     COMMENT("cmt");
 

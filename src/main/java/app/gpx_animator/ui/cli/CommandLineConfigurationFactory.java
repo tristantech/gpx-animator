@@ -22,6 +22,7 @@ import app.gpx_animator.core.UserException;
 import app.gpx_animator.core.configuration.Configuration;
 import app.gpx_animator.core.configuration.TrackConfiguration;
 import app.gpx_animator.core.configuration.adapter.FontXmlAdapter;
+import app.gpx_animator.core.data.DistanceUnit;
 import app.gpx_animator.core.data.Position;
 import app.gpx_animator.core.data.SpeedUnit;
 import app.gpx_animator.core.data.TrackIcon;
@@ -97,6 +98,7 @@ public final class CommandLineConfigurationFactory {
                         case ATTRIBUTION -> cfg.attribution(args[++i]);
                         case ATTRIBUTION_POSITION -> cfg.attributionPosition(Position.parse(args[++i]));
                         case ATTRIBUTION_MARGIN -> cfg.attributionMargin(Integer.parseInt(args[++i]));
+                        case INFORMATION -> cfg.information(args[++i]);
                         case INFORMATION_POSITION -> cfg.informationPosition(Position.parse(args[++i]));
                         case INFORMATION_MARGIN -> cfg.informationMargin(Integer.parseInt(args[++i]));
                         case COMMENT_POSITION -> cfg.commentPosition(Position.parse(args[++i]));
@@ -108,6 +110,9 @@ public final class CommandLineConfigurationFactory {
                             cfg.backgroundColor(new Color(lv < Integer.MAX_VALUE ? (int) lv : (int) (0xffffffff00000000L | lv), true));
                         }
                         case BACKGROUND_IMAGE -> cfg.backgroundImage(new File(args[++i]));
+                        case ELEV_UNIT -> {
+                            cfg.elevationUnit(DistanceUnit.parse(args[++i], DistanceUnit.METERS));
+                        }
                         case FLASHBACK_COLOR -> {
                             final long lv1 = Long.decode(args[++i]);
                             cfg.flashbackColor(new Color(lv1 < Integer.MAX_VALUE ? (int) lv1 : (int) (0xffffffff00000000L | lv1), true));

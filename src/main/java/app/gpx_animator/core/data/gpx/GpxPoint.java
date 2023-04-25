@@ -30,12 +30,15 @@ public final class GpxPoint extends Point2D.Double {
     private final TrackPoint trackPoint;
     private final long time;
     private final java.lang.Double speed;
+    private final java.lang.Double elevation;
 
-    public GpxPoint(final double x, final double y, final TrackPoint trackPoint, final long time, @Nullable final java.lang.Double speed) {
+    public GpxPoint(final double x, final double y, final TrackPoint trackPoint, final long time,
+            @Nullable final java.lang.Double speed, @Nullable final java.lang.Double elevation) {
         super(x, y);
         this.trackPoint = trackPoint;
         this.time = time;
         this.speed = speed;
+        this.elevation = elevation;
     }
 
     public TrackPoint getTrackPoint() {
@@ -48,6 +51,10 @@ public final class GpxPoint extends Point2D.Double {
 
     public java.lang.Double getSpeed() {
         return speed;
+    }
+
+    public java.lang.Double getElevation() {
+        return elevation;
     }
 
     @Override
@@ -68,6 +75,9 @@ public final class GpxPoint extends Point2D.Double {
             return false;
         }
         if (!trackPoint.equals(gpxPoint.trackPoint)) {
+            return false;
+        }
+        if (!Objects.equals(elevation, gpxPoint.elevation)) {
             return false;
         }
         return Objects.equals(speed, gpxPoint.speed);
