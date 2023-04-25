@@ -18,6 +18,7 @@ package app.gpx_animator.ui.swing;
 import app.gpx_animator.core.Constants;
 import app.gpx_animator.core.Option;
 import app.gpx_animator.core.configuration.Configuration;
+import app.gpx_animator.core.data.DistanceUnit;
 import app.gpx_animator.core.data.MapTemplate;
 import app.gpx_animator.core.data.Position;
 import app.gpx_animator.core.data.SpeedUnit;
@@ -80,6 +81,7 @@ abstract class GeneralSettingsPanel extends JPanel {
     public static final String PLACEHOLDER_MAP_ATTRIBUTION = "%MAP_ATTRIBUTION%";
     public static final String PLACEHOLDER_APPNAME_VERSION = "%APPNAME_VERSION%";
     public static final String PLACEHOLDER_SPEED = "%SPEED%";
+    public static final String PLACEHOLDER_ELEV = "%ELEV%";
     public static final String PLACEHOLDER_DATETIME = "%DATETIME%";
     public static final String PLACEHOLDER_LATLON = "%LATLON%";
     public static final String PLACEHOLDER_GPSSTATUS = "%GPSSTATUS%";
@@ -113,6 +115,7 @@ abstract class GeneralSettingsPanel extends JPanel {
     private final JTextField tmsApiKey;
     private final JPlaceholderTextField tmsUserAgent;
     private final JComboBox<SpeedUnit> speedUnitComboBox;
+    private final JComboBox<DistanceUnit> elevUnitComboBox;
     private final JSlider backgroundMapVisibilitySlider;
     private final FontSelector fontSelector;
     private final FontSelector waypointFontSelector;
@@ -146,7 +149,7 @@ abstract class GeneralSettingsPanel extends JPanel {
     @SuppressWarnings("checkstyle:MethodLength") // TODO Refactor when doing the redesign task https://github.com/gpx-animator/gpx-animator/issues/60
     GeneralSettingsPanel() {
         var rowCounter = 0;
-        final var maxRows = 46;
+        final var maxRows = 47;
 
         setBorder(new EmptyBorder(5, 5, 5, 5));
         final var gridBagLayout = new GridBagLayout();
@@ -1214,6 +1217,7 @@ abstract class GeneralSettingsPanel extends JPanel {
         informationTextArea.setToolTipText(Option.INFORMATION.getHelp());
         final var informationPopupMenu = new JPopupMenu();
         Map.of(PLACEHOLDER_SPEED, "speed",
+               PLACEHOLDER_ELEV, "elevation",
                PLACEHOLDER_DATETIME, "date & time",
                PLACEHOLDER_LATLON, "latitude & longitude",
                PLACEHOLDER_GPSSTATUS, "gps status",
@@ -1365,6 +1369,23 @@ abstract class GeneralSettingsPanel extends JPanel {
         gbcSpeedUnit.gridx = 1;
         gbcSpeedUnit.gridy = rowCounter;
         add(speedUnitComboBox, gbcSpeedUnit);
+
+        final var lblElevUnit = new JLabel(resourceBundle.getString("ui.panel.generalsettings.elevationunit.label"));
+        final var gbcLabelElevUnit = new GridBagConstraints();
+        gbcLabelElevUnit.anchor = GridBagConstraints.LINE_END;
+        gbcLabelElevUnit.insets = new Insets(0, 0, 5, 5);
+        gbcLabelElevUnit.gridx = 0;
+        gbcLabelElevUnit.gridy = ++rowCounter;
+        add(lblElevUnit, gbcLabelElevUnit);
+
+        elevUnitComboBox = new JComboBox<>();
+        speedUnitComboBox.setToolTipText(Option.ELEV_UNIT.getHelp());
+        DistanceUnit.fillComboBox(elevUnitComboBox);
+        final var gbcElevUnit = new GridBagConstraints();
+        gbcElevUnit.fill = GridBagConstraints.HORIZONTAL;
+        gbcElevUnit.gridx = 1;
+        gbcElevUnit.gridy = rowCounter;
+        add(elevUnitComboBox, gbcElevUnit);
 
         final var lblGpsTimeout = new JLabel(resourceBundle.getString("ui.panel.generalsettings.gpstimeout.label"));
         final var gbcLabelGpsTimeout = new GridBagConstraints();
@@ -1541,6 +1562,7 @@ abstract class GeneralSettingsPanel extends JPanel {
         final var tmsUrlTemplate = tmsItem instanceof MapTemplate mapTemplate ? mapTemplate.url() : (String) tmsItem;
         final var attribution = generateAttributionText(replacePlaceholders, tmsItem);
         final var speedUnit = (SpeedUnit) speedUnitComboBox.getSelectedItem();
+        final var elevationUnit = (DistanceUnit) elevUnitComboBox.getSelectedItem();
 
         builder.height((Integer) heightSpinner.getValue())
                 .width((Integer) widthSpinner.getValue())
@@ -1592,6 +1614,7 @@ abstract class GeneralSettingsPanel extends JPanel {
                 .attribution(attribution)
                 .attributionPosition((Position) attributionLocationComboBox.getSelectedItem())
                 .speedUnit(speedUnit)
+                .elevationUnit(elevationUnit)
                 .gpsTimeout((Long) gpsTimeoutSpinner.getValue());
     }
 

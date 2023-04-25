@@ -89,6 +89,7 @@ public enum Option {
     TRACK_ICON_FILE("track-icon-file"),
     TRACK_ICON_MIRROR("track-icon-mirror"),
     SPEED_UNIT("speed-unit"),
+    ELEV_UNIT("elev-unit"),
     PREVIEW_LENGTH("preview-length"),
     GPS_TIMEOUT("gps-timeout"),
     VERSION("version");

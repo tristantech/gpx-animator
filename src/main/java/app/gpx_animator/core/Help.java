@@ -91,6 +91,7 @@ public final class Help {
         w.writeOptionHelp(Option.TMS_USER_AGENT, "tms-user-agent", false, cfg.getTmsUserAgent()); //NON-NLS
         w.writeOptionHelp(Option.TOTAL_TIME, "time", false, cfg.getTotalTime()); //NON-NLS
         w.writeOptionHelp(Option.SPEED_UNIT, "speed", false, cfg.getSpeedUnit()); //NON-NLS
+        w.writeOptionHelp(Option.ELEV_UNIT, "elev-unit", false, cfg.getElevationUnit()); //NON-NLS
         w.writeOptionHelp(Option.VIEWPORT_WIDTH, "viewport-width", false, cfg.getViewportWidth()); //NON-NLS
         w.writeOptionHelp(Option.VIEWPORT_HEIGHT, "viewport-height", false, cfg.getViewportHeight()); //NON-NLS
         w.writeOptionHelp(Option.VIEWPORT_INERTIA, "viewport-inertia", false, cfg.getViewportInertia()); //NON-NLS

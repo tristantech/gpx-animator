@@ -138,6 +138,12 @@ public final class GpxContentHandler extends DefaultHandler {
                         trackPoint = trackPoint.withSpeed(speed);
                     }
                 }
+                case ELE -> {
+                    if (trackPoint != null && !sb.isEmpty()) {
+                        final var ele = Double.parseDouble(sb.toString());
+                        trackPoint = trackPoint.withElevation(ele);
+                    }
+                }
                 case NAME -> {
                     if (wayPoint != null) {
                         wayPoint = wayPoint.withName(sb.toString());
