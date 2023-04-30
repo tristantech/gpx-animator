@@ -54,6 +54,9 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
     private final Map<Integer, Double> speedValues = new HashMap<>();
     private GpxPoint lastSpeedPoint = null;
 
+    private long odometer = 0;
+    private GpxPoint lastOdometerPoint = null;
+
     public InformationPlugin(@NonNull final Configuration configuration) {
         super(configuration.getFont());
         this.information = configuration.getInformation();
@@ -91,6 +94,7 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
         final var latLongString = getLatLonString(marker);
         final var speedString = getSpeedString(marker, time, frame);
         final var elevationString = getElevationString(marker);
+        final var odometerString = getOdometerString();
 
         final var gpsTime = getTime(marker);    //TODO --Get strings from resource
         var gpsDateTimeString = "Unknown";
@@ -108,6 +112,16 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
             gpsStatusString = gpsStatus ? "OK" : "LOST";      //TODO --Get strings from resource
         }
 
+        if (marker instanceof GpxPoint gpxPoint) {
+            if (lastOdometerPoint == null) {
+                lastOdometerPoint = gpxPoint;
+            } else if (!gpxPoint.equals(lastOdometerPoint)) {
+                // Update total travelled distance (odometer)
+                odometer += calculateDistance(lastOdometerPoint, gpxPoint);
+                lastOdometerPoint = gpxPoint;
+            }
+        }
+
         final var text = information
                 .replace("%SPEED%", speedString)                    // Speed
                 .replace("%LATLON%", latLongString)                 // (last) GPS postion
@@ -116,7 +130,8 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
                 .replace("%GPSDIFFTIME%", gpsDiffTimeString)        // Difference between frame time and last GPS time
                 .replace("%GPSLOSTTIME%", gpsLostTimeString)        // Difference between frame time and last GPS time if GSP LOST
                 .replace("%GPSSTATUS%", gpsStatusString)            // GPS status only [OK/LOST]
-                .replace("%ELEV%", elevationString);                // Elevation
+                .replace("%ELEV%", elevationString)                 // Elevation
+                .replace("%DISTANCE%", odometerString);             // Odometer
         renderText(text, position, margin, image);
     }
 
@@ -154,6 +169,10 @@ public final class InformationPlugin extends TextRenderer implements RendererPlu
         } else {
             return "";
         }
+    }
+
+    private String getOdometerString() {
+        return "%f mi".formatted(DistanceUnit.MILES.convertDistance(odometer));
     }
 
     private long getTime(@NonNull final Point2D point) {
